@@ -1,0 +1,66 @@
+
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>EcoDashboard</title>
+        <link rel="stylesheet" type="text/css" href="css/default.css">
+        <link rel="stylesheet" type="text/css" href="css/dashboard.css">
+
+    </head>
+
+    <body>
+        <%- include('../partials/header.ejs', {avatar: avatar}) %>
+
+        <!--
+        <h1>USER ID: </h1> <h2><%= id %></h2>
+        <h1>Username: </h1> <h2><%= username%></h2>
+        -->
+        <div id="outer-ex">
+        <div id="inner-ex">
+        <h1>Como que isto funciona?</h1>
+
+        <h2>De forma geral</h2>
+        <p class="explanation">
+            Associa-se melhores deals entre G2G-SteamDB e DMarket-Steam.
+            Assim, encontramos os jogos mais overpaid na G2G (considerando que são comprados na Argentina) e encontra-se 
+            a melhor forma de depositar dinheiro para os comprar no mercado DMarket. No DMarket há visuais consideravelmente 
+            abaixo do preço do SteamMarket, logo, existirá o EcoScraper relativo a DMarket-SteamMarket de modo a garantir a 
+            melhor margem de lucro no pré-deposito da compra de um jogo como presente para a conta argentina a ser vendida na G2G.
+        </p>
+
+        <h2>Secção G2G Deals</h2>
+        <p class="explanation"> 
+            Nessa página poder-se-á requisitar ao EcoScraper relativo à ponte G2G-SteamDB para analisar um certo jogo e adicioná-lo na DB para
+            uso na associção G2G Deals|DMarket Deals. Dever-se-á dar (caso já exista) uma prévia do lucro pela margem e comissões do DMarket, mas também
+            considerando os -5% da Steam e os -10% da G2G. 
+        </p>
+
+        <h2>Secção DMarket Deals</h2>
+        <p class="explanation"> 
+            Nessa página pede-se ao EcoScraper relativo à ponte DMarket-SteamMarket para analisar um certo visual e adicioná-lo na DB para
+            uso na associção DMarket Deals|G2G Deals. Dever-se-á dar (caso já exista) uma prévia do lucro pela margem e comissões do DMarket, mas também
+            considerando os -5% da Steam. 
+        </p>
+
+        <h2>Secção G2G | DMarket</h2>
+        <p class="explanation"> 
+            Aqui é possível analisar os deals lado a lado, em formato de tabela, podendo conectar <strong>duas relações</strong> (G2G-SteamDB&lt-&gtDMarket-SteamMarket),
+            proporcionando uma vista de todas as comissões e margens de lucro. Também, poderá-se salvar as relações em pdf ou simplesmente uma detalhada
+            em pdf.
+        </p>
+
+        <h2>Settings</h2>
+        <p class="explanation"> 
+            Esta é uma zona fundamental. Aqui define-se as regras do Scrapper e afina-se as comissões relativas a cada estágio (DMarket depósito, 
+            SteamMarket Fee, G2G comission etc etc).
+
+        </p>
+        </div>
+        </div>
+        <!--<h1>Avatar: </h1> <img src="< %= avatar % >"> -->
+    </body>
+
+    
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>EcoDashboard - DMarket Deals</title>
+        <link rel="stylesheet" type="text/css" href="css/default.css">
+        <link rel="stylesheet" type="text/css" href="css/dmarket_deals.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    </head>
+
+    <body>
+        <%- include('../partials/header.ejs', {avatar: avatar}) %>
+
+        <!--
+        <h1>USER ID: </h1> <h2><%= id %></h2>
+        <h1>Username: </h1> <h2><%= username%></h2>
+        -->
+        <!--<h1>Avatar: </h1> <img src="<%= avatar %> "> -->
+        <div class="wrapper">
+            <div id="left-side">
+                <% if (previous_data !== null) { %>
+                    <table id="table-deals">
+                        <tr>
+                            <th class="table-header first-header">Title</th>
+                            <th class="table-header">DMPrice</th>
+                            <th class="table-header">SMPrice</th>
+                            <th class="table-header">Gain (value)</th>
+                            <th class="table-header">Gain (%)</th>
+                            <th class="table-header">Buy</th>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
+                            <th class="table-header last-header">Transpose</th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                        
+                        </tr>
+                        
+                        
+                            <% for( let index = 0; index < 25; index++ ) { %>
+                                <tr>
+                                    <th class="table-entry first-entry left-align-entry" id="item-<%=index%>">AWP | Fever Dream (Minimal Wear)</th>
+                                    <th class="table-entry">10$ (1000ARS$)</th>
+                                    <th class="table-entry">15$ (1500ARS$)</th>
+                                    <th class="table-entry">5$</th>
+                                    <th class="table-entry">50% ↑</th>
+                                    <th class="table-entry buy-entry"><a class="buy-entry-link" onclick="alert('Trying to buy (item-<%=index%>) ' + document.getElementById('item-<%=index%>').innerText)">Buy</a></th>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
+                                    <th class="table-entry last-entry"><input type="checkbox"></th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                                </tr>
+                            <% } %>
+                        
+                        
+                    </table>
+                <% } else { %>
+                    <div id="no-data">
+                        <h1>[No Data Available]</h1>
+                    </div>
+                <% } %>
+            </div>
+            <div id="right-side">
+                <div id="top-right-side">
+                    <div class="button-container">
+                        <button class="remote-btn input" id="remote-update-dmarket">Update DMarket Data</button>
+                        <button class="remote-btn input" id="remote-item-nameit">Acquire ItemNameID (internal needs)</button>
+                        <button class="remote-btn input" id="remote-item-priceit">Price Items (internally-remote)</button>
+                    </div>
+                </div>
+                <div id="bottom-right-side">
+                    <div class="wrapper-v">
+                        <div class="progress">
+                            <!-- <label for="remote-progress" id="lblprogress">Progress:</label> -->
+                            <!-- <progress id="remote-progress" value="0" max="100"></progress> -->
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                        </div>
+                        <canvas id="proxy-health">
+
+                        </canvas>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- SCRIPTS -->
+        <script src="js/jquery-3.6.1.min.js" defer></script>
+        <script src="js/dmarket_deals.js" defer></script>
+
+    </body>
+
+    
+</html>

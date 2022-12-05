@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title> EcoGaming - SE </title>
+</head>
+<body>
+
+    <h1>Your session expired. Please login again.</h1>
+    <h3>Wait 5 seconds to be redirected. If you don't get redirected, please <a id="manual_redir" href="/login">click here</a></h3>
+    <script>
+        const queryString = window.location.search 
+        const urlParams = new URLSearchParams(queryString)
+        let redir = null
+        if (urlParams.has('redirto')) {
+            redir = urlParams.get('redirto')
+
+        }
+        link = document.getElementById("manual_redir")
+        link.href = (redir === null ? "/login" : "/login?redirto="+redir)
+        function setCookie(name,value,days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+        setCookie('wasLoggedIn', 'false')
+        setTimeout(()=> {window.location = (redir === null ? "/login" : "/login?redirto="+redir)}, 5000)
+    </script>
+</body>
+
+</html>
