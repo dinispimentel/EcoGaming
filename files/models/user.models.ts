@@ -63,7 +63,7 @@ function is_flash_config(str: string){
     for (let f=0; f<fcs.length; f++) {
         if (fcs[f] == str) return true;
     }
-    throw Error("Config doesn't exist")
+    throw new Error("Script error, config asked doesn't exist.")
 }
 
 
@@ -81,6 +81,13 @@ export async function get_flash_config(user: User, config_col: string, app: Expr
     }
     return fc
 }   
+
+export async function save_flash_config(user: User, config_col: string, newjson: string, app: Express): Promise<void> {
+    let pool = <mysql.Pool> app.get('db_pool')
+    is_flash_config(config_col)
+    let res = await pool.promise().query("UPDATE `ecogaming`.`flash_user_config` SET `"+ config_col +"` = ? WHERE (uid = ?);", [newjson, user.id])
+    console.table(res)
+}
 
 /*
 

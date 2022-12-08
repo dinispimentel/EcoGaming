@@ -4,19 +4,42 @@ import { Request as ERequest, Response as EResponse, Express } from 'express'
 import { DMSMScraper, url_make } from '../config/endpoints.config';
 import { fetch_scraper } from './defaultscraper.controllers';
 import { check_authed } from './enforceauth.controllers';
-import { initUserScraperAddr } from '../models/user.models';
+import { initUserScraperAddr, save_flash_config } from '../models/user.models';
 import { NoScraperConfigFoundError } from '../classes/global.classes';
 
 
 export function req_best_deals(req : ERequest, res: EResponse) {
+    try {
+        req.body.sort_direction = Number(req.body.sort_direction)
+        req.body.offset = Number(req.body.offset)
+        req.body.offer_count = Number(req.body.offer_count)
+        fetch_scraper(req, res, 1, DMSMScraper.paths.GET.BestDeals, "GET");
+    } catch {
+        res.status(500).json({success: false, msg: "Error casting types"})
+    }
     
-
-    fetch_scraper(req, res, 1, DMSMScraper.paths.GET.BestDeals, "GET");
 
 }   // ISTO É USADO NO SERVER SIDE COMO PROXY A MASCARAR O SCRAPER PYTHON
 
-export function update_scraper_dmarket(req: ERequest, res: EResponse) {
-    fetch_scraper(req, res, 1, DMSMScraper.paths.POST.UpdateDMarket, "POST", undefined, req.body);
+export function update_scraper_dmarket(req: ERequest, res: EResponse, app: Express) {
+    try {
+
+        
+        req.body.limit = Number(req.body.limit)
+        req.body.offset = Number(req.body.offset)
+        req.body.priceFrom = Number(req.body.priceFrom)
+        req.body.priceTo = Number(req.body.priceTo)
+        req.body.maxLimit = Number(req.body.maxLimit)
+        console.log("To fetch body: ", req.body)
+        fetch_scraper(req, res, 1, DMSMScraper.paths.POST.UpdateDMarket, "POST", undefined, req.body, () => {
+            if (req.session.User) {
+                save_flash_config(req.session.User, 'update_internal_dmarket', JSON.stringify(req.body), app)    
+            }
+        });
+    } catch {
+        res.status(500).json({success: false, msg: "Error casting types"})
+    }
+    
 }
 
 export function scraper_status(req: ERequest, res: EResponse) {

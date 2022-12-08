@@ -68,15 +68,33 @@
     height: 100%;
 }
 
+.form-popup-field-buttons {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: end;
+    justify-items: end;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
 .form-popup-field-div-input {
     border: none;
+    border-bottom: 1px solid royalblue;
     height: 32px;
 }
 
-.form-popup-submit {
-    background-color: aqua;
-    border-radius: 5%;
+.form-popup-button {
+    --bs-btn-padding-y: 0px;
+    margin-right: 10px;    
+    margin-bottom: 10px;
     height: 32px;
     width: 100px;
     text-align: center;
+/*     align-self: end; */
+}
+
+.form-popup-field-first-div {
+    padding-top: 30px;
 }

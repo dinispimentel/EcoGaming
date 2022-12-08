@@ -9,9 +9,10 @@ export function routing(app : Express) {
     app.get(PREFIX + "bestdeals", req_best_deals)
     app.get(PREFIX + "status", scraper_status)
     app.get(PREFIX + "websocket-addr", get_scraper_addr)
-    app.post(PREFIX + "update-dmarket-data", update_scraper_dmarket)
+    app.post(PREFIX + "update-dmarket-data", (req: ERequest, res: EResponse) => {update_scraper_dmarket(req, res, app)})
     app.post(PREFIX + "item-naming", (req: ERequest, res: EResponse) => {scraper_item_name(req, res, app)})
     app.post(PREFIX + "item-pricing", scraper_item_price)
+    
     // #\
 
     

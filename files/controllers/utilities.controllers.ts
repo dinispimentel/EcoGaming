@@ -16,7 +16,7 @@ export async function retrieve_flash_config (req: ERequest, res: EResponse, app:
                 res.json({success: false, msg: "flash config not found"});
             } else {
                 res.status(500)
-                res.json({success: false, msg: error})
+                res.json({success: false, msg: "config not found on server."})
             }
             
         }

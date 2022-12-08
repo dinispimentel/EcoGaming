@@ -75,6 +75,7 @@ export class PopUp {
         this.pop_up_div = null
         this.pop_up_display = null
         this.pop_up_submit = null
+        this.pop_up_close = null
         this.on_submit_cb = on_submit_cb
     }
 
@@ -92,6 +93,7 @@ export class PopUp {
         for (let i=0; i < this.fields.length; i++) {
             let field_config = this.fields[i]
             let field_div = _createField(field_config.field_id, field_config.field_name, field_config.field_type, field_config.mandatory, field_config.field_options)
+            if (i===0) field_div.classList.add('form-popup-field-first-div')
             this.pop_up_display.appendChild(field_div)
         }
 
@@ -109,14 +111,30 @@ export class PopUp {
             let ret = []
             
             for (let f=0; f<this.fields.length; f++) {
-                ret.push({field_name: this.fields[f].field_name, field_value: this.getFieldById(this.fields[f].field_id).value})
+                ret.push({field_id: this.fields[f].field_id, field_value: this.getFieldById(this.fields[f].field_id).value,
+                    field_type: this.fields[f].field_type})
             }
             this.on_submit_cb(ret)
             this.clear()
         }
-        this.pop_up_submit.classList.add('form-popup-submit')
+    
+        this.pop_up_submit.classList.add('form-popup-button')
+        this.pop_up_submit.classList.add('btn')
+        this.pop_up_submit.classList.add('btn-primary')
         this.pop_up_submit.innerText = "Submit"
-        this.pop_up_display.appendChild(this.pop_up_submit)
+        this.pop_up_close = document.createElement('button')
+        this.pop_up_close.onclick = () => {
+            this.clear()
+        }
+        this.pop_up_close.classList.add('form-popup-button')
+        this.pop_up_close.classList.add('btn')
+        this.pop_up_close.classList.add('btn-outline-primary')
+        this.pop_up_close.innerText = "Close"
+        let button_entry_div = document.createElement('div')
+        button_entry_div.classList.add('form-popup-field-buttons')
+        button_entry_div.appendChild(this.pop_up_submit)
+        button_entry_div.appendChild(this.pop_up_close)
+        this.pop_up_display.appendChild(button_entry_div)
         pop_up_horizontal_div.appendChild(this.pop_up_display)
         this.pop_up_div.appendChild(pop_up_horizontal_div)
         
@@ -133,6 +151,7 @@ export class PopUp {
         this.on_submit_cb = null
         this.pop_up_div = null
         this.on_show = null
+        this.pop_up_close = null
         
     }
 
