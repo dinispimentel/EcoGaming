@@ -1,0 +1,82 @@
+
+
+
+.form-popup-div {
+    background-color: rgba(0,0,0,0.3);
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    vertical-align: middle;
+    justify-content: space-around;
+    justify-self: center;
+
+}
+
+.form-popup-display {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    
+    background-color: white;
+    /* border-radius: 5% 50% 50% 5%; */
+    display: flex;
+    width: 30%;
+    height: fit-content;
+    flex-direction: column;
+
+}
+
+.form-popup-field-div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.form-popup-field-center-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: fit-content;
+    
+}
+
+.form-popup-field-header {
+    font-family: 'Segoe UI';
+    font-size: 14px;
+    font-weight: bolder;
+}
+
+.form-popup-field-mandatory {
+    color: red;
+    font-style: italic;
+}
+
+.form-popup-field-entry {
+    width: 70%;
+    height: 100%;
+}
+
+.form-popup-field-div-input {
+    border: none;
+    height: 32px;
+}
+
+.form-popup-submit {
+    background-color: aqua;
+    border-radius: 5%;
+    height: 32px;
+    width: 100px;
+    text-align: center;
+}

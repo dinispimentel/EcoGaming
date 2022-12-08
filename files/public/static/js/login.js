@@ -3,7 +3,7 @@
 const queryString = window.location.search 
 const urlParams = new URLSearchParams(queryString)
 var redir = "/dashboard"
-if (urlParams.has('redirto')) {
+if (urlParams.has('redirto') && urlParams.get('redirto') !== "") {
   redir="/" + urlParams.get('redirto')
 }
 

@@ -2,8 +2,8 @@
 // import {pool} from './db'
 import { RowDataPacket } from 'mysql2'
 import {compare} from 'bcrypt'
-import { UserNotFoundError, NoScraperConfigFoundError } from '../classes/global.classes'
-import { ScraperAddr, User } from '../exports/global.exports'
+import { UserNotFoundError, NoScraperConfigFoundError, NoFlashConfigFoundError} from '../classes/global.classes'
+import { FC_UIDM, FlashConfig, ScraperAddr, User } from '../exports/global.exports'
 import { Express } from 'express'
 import mysql from 'mysql2'
 
@@ -17,6 +17,9 @@ interface IUser extends RowDataPacket {
 interface IScraperAddr extends RowDataPacket {
     host: string
     wsport: number 
+}
+interface IFlashConfig extends RowDataPacket {
+    update_internal_dmarket?: string
 }
 
 // IGNORAR interface IUser extends Array<IUser> {}  // Junta o login_res[] ao login_res como sendo um só
@@ -50,11 +53,34 @@ export async function initUserScraperAddr(user: User, app: Express){
         console.log("Throwing ");
         throw new NoScraperConfigFoundError("scraper config not found");
     }
-    console.log("User received", user)
+    
     user.scraper_addr = new ScraperAddr(res[0][0].host, res[0][0].wsport)
 }
 
+function is_flash_config(str: string){
+    
+    let fcs = ["update_internal_dmarket"]
+    for (let f=0; f<fcs.length; f++) {
+        if (fcs[f] == str) return true;
+    }
+    throw Error("Config doesn't exist")
+}
 
+
+export async function get_flash_config(user: User, config_col: string, app: Express): Promise<FlashConfig> {
+    let pool = <mysql.Pool> app.get('db_pool')
+    is_flash_config(config_col)
+    let res = await pool.promise().query<IFlashConfig[]>("SELECT "+ config_col +" FROM flash_user_config WHERE uid = ?;", [user.id])
+    if (Object.keys(res[0]).length === 0 || res[0].length === 0) {
+        console.log("No flash config", user.id)
+        throw new NoFlashConfigFoundError("flash config not found")
+    } 
+    let fc = <FlashConfig> {}
+    if (res[0][0].update_internal_dmarket) {
+        fc.update_internal_dmarket = <FC_UIDM> (typeof res[0][0].update_internal_dmarket === 'object' ? res[0][0].update_internal_dmarket : JSON.parse(res[0][0].update_internal_dmarket))
+    }
+    return fc
+}   
 
 /*
 

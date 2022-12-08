@@ -6,6 +6,7 @@
         <link rel="stylesheet" type="text/css" href="css/default.css">
         <link rel="stylesheet" type="text/css" href="css/dmarket_deals.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        
     </head>
 
     <body>
@@ -65,7 +66,7 @@
                         <div class="progress">
                             <!-- <label for="remote-progress" id="lblprogress">Progress:</label> -->
                             <!-- <progress id="remote-progress" value="0" max="100"></progress> -->
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="progress-bar-remote"></div>
                         </div>
                         <canvas id="proxy-health">
 
@@ -79,7 +80,8 @@
 
         <!-- SCRIPTS -->
         <script src="js/jquery-3.6.1.min.js" defer></script>
-        <script src="js/dmarket_deals.js" defer></script>
+        <link rel="stylesheet" type="text/css" href="css/utils/form_popup.css">
+        <script type="module" src="js/dmarket_deals.js" defer></script>
 
     </body>
 

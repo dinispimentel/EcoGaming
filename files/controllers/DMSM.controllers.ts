@@ -1,7 +1,7 @@
 import request from 'request';
 import { Response as RResponse } from 'request';
-import { Request as ERequest, Response as EResponse, Express} from 'express'
-import {DMSMScraper, url_make } from '../config/endpoints.config';
+import { Request as ERequest, Response as EResponse, Express } from 'express'
+import { DMSMScraper, url_make } from '../config/endpoints.config';
 import { fetch_scraper } from './defaultscraper.controllers';
 import { check_authed } from './enforceauth.controllers';
 import { initUserScraperAddr } from '../models/user.models';
@@ -24,6 +24,7 @@ export function scraper_status(req: ERequest, res: EResponse) {
 }
 
 export function scraper_item_name(req: ERequest, res: EResponse, app: Express) {
+    console.log("item naming received, auth? " + req.cookies['connect.sid'])
     if(check_authed(req, res, "", false)) {
         
         fetch_scraper(req, res, 1, DMSMScraper.paths.POST.ItemNaming, "POST")
@@ -32,14 +33,15 @@ export function scraper_item_name(req: ERequest, res: EResponse, app: Express) {
     
 }
 
+export function get_scraper_addr(req: ERequest, res: EResponse) {
+    if (check_authed(req, res, "", false)) {
+        res.json({success: true, host: req.session.User?.scraper_addr?.host, port: req.session.User?.scraper_addr?.wsport})
+    }
+}
+
 export function scraper_item_price(req: ERequest, res: EResponse) {
     fetch_scraper(req, res, 1, DMSMScraper.paths.POST.ItemPricing, "POST", undefined, req.body)
 }
-
-
-
-    
-
 
 
 export async function load_darket_deals(req: ERequest, res: EResponse, app: Express) {

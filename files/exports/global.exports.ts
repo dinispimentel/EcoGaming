@@ -1,5 +1,6 @@
 import { Session } from "express-session";
 
+
 export interface LoggedStatus {
     isLogged : boolean
 }
@@ -32,6 +33,25 @@ export class ScraperAddr {
         this.host = host
         this.wsport = wsport
     }
+}
+
+export interface FC_UIDM {
+    
+    gameId: string,
+    limit: number,
+    offset: number | string,
+    orderBy: string,
+    orderDir: string,
+    currency: string,
+    types: string,
+    priceFrom: number,
+    priceTo: number,
+    maxLimit: number
+       
+}
+
+export interface FlashConfig {
+    update_internal_dmarket?: FC_UIDM
 }
 
 declare module 'express-session' {

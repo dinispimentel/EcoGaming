@@ -24,6 +24,7 @@ pool.getConnection( (error : NodeJS.ErrnoException, connection : PoolConnection)
 
 import {routing as main_routing} from './files/routes/main-site.routes'
 import {routing as dmsm_routing} from './files/routes/DMSM.routes'
+import {routing as utils_routing} from './files/routes/utilities.routes'
 import path from "path";
 import { getHeapSpaceStatistics } from "v8";
 //import { PoolConnection } from "mysql2";
@@ -31,6 +32,15 @@ app.set('trust proxy', 1) // trust --first-- proxy
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'files/views'))
 app.use(session({
+  /* genid: function(req) {
+    let chars = ['0', '1','2','3','4','5','6','7','8','9', 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    let id = ""
+    /* return String (String(Math.round(Math.random() * (10**16))) +  String(Math.round(Math.random() * (10**16)))) // use UUIDs for session IDs  
+    for (let i=0; i<(64-1); i++) {
+      id += String(chars[Math.round(Math.random()*10000) % (chars.length)])
+    }
+    return id
+  }, */
   secret: 'supersecretfuckingpa$$word',
   resave: true,
   saveUninitialized: true,
@@ -71,7 +81,8 @@ app.use(express.static(path.join(__dirname, '/files/public/static')))
 
 // set port, listen for requests
 main_routing(app);
-dmsm_routing(app)
+dmsm_routing(app);
+utils_routing(app);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000.");

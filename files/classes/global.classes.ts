@@ -13,3 +13,11 @@ export class NoScraperConfigFoundError extends Error{
         this.msg = msg;
     }
 }
+
+export class NoFlashConfigFoundError extends Error{
+    msg: string
+    constructor(msg : string) {
+        super(msg)
+        this.msg = msg;
+    }
+}
