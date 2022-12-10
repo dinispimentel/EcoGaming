@@ -19,9 +19,9 @@
         <!--<h1>Avatar: </h1> <img src="<%= avatar %> "> -->
         <div class="wrapper">
             <div id="left-side">
-                <% if (previous_data !== null) { %>
-                    <table id="table-deals">
-                        <tr>
+                
+                    <table id="table-deals" <% if (previous_data === undefined || previous_data === null ) { %> hidden <% } %> >
+                        <tr class="first-row">
                             <th class="table-header first-header">Title</th>
                             <th class="table-header">DMPrice</th>
                             <th class="table-header">SMPrice</th>
@@ -32,26 +32,26 @@
                         
                         </tr>
                         
-                        
+                        <% if (previous_data !== null) { %>
                             <% for( let index = 0; index < 25; index++ ) { %>
                                 <tr>
-                                    <th class="table-entry first-entry left-align-entry" id="item-<%=index%>">AWP | Fever Dream (Minimal Wear)</th>
-                                    <th class="table-entry">10$ (1000ARS$)</th>
-                                    <th class="table-entry">15$ (1500ARS$)</th>
-                                    <th class="table-entry">5$</th>
-                                    <th class="table-entry">50% ↑</th>
-                                    <th class="table-entry buy-entry"><a class="buy-entry-link" onclick="alert('Trying to buy (item-<%=index%>) ' + document.getElementById('item-<%=index%>').innerText)">Buy</a></th>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
-                                    <th class="table-entry last-entry"><input type="checkbox"></th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                                    <td class="table-entry first-entry left-align-entry" id="item-<%=index%>">AWP | Fever Dream (Minimal Wear)</td>
+                                    <td class="table-entry">10$ (1000ARS$)</td>
+                                    <td class="table-entry">15$ (1500ARS$)</td>
+                                    <td class="table-entry">5$</td>
+                                    <td class="table-entry">50% ↑</td>
+                                    <td class="table-entry buy-entry"><a class="buy-entry-link" onclick="alert('Trying to buy (item-<%=index%>) ' + document.getElementById('item-<%=index%>').innerText)">Buy</a></td>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
+                                    <td class="table-entry last-entry"><input type="checkbox"></td>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
                                 </tr>
                             <% } %>
-                        
+                        <% } else { %>
+                            <div id="no-data">
+                                <h1>[No Data Available]</h1>
+                            </div>
+                        <% } %>
                         
                     </table>
-                <% } else { %>
-                    <div id="no-data">
-                        <h1>[No Data Available]</h1>
-                    </div>
-                <% } %>
+                
             </div>
             <div id="right-side">
                 <div id="top-right-side">
