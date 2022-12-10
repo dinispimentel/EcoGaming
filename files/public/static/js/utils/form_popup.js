@@ -115,7 +115,7 @@ export class PopUp {
                     field_type: this.fields[f].field_type})
             }
             this.on_submit_cb(ret)
-            this.clear()
+            // this.clear() handled by the caller
         }
     
         this.pop_up_submit.classList.add('form-popup-button')
