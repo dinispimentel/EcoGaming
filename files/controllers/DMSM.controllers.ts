@@ -8,12 +8,16 @@ import { initUserScraperAddr, save_flash_config } from '../models/user.models';
 import { NoScraperConfigFoundError } from '../classes/global.classes';
 
 
-export function req_best_deals(req : ERequest, res: EResponse) {
+export function req_best_deals(req : ERequest, res: EResponse, app: Express) {
     try {
         req.body.sort_direction = Number(req.body.sort_direction)
         req.body.offset = Number(req.body.offset)
         req.body.offer_count = Number(req.body.offer_count)
-        fetch_scraper(req, res, 1, DMSMScraper.paths.GET.BestDeals, "GET");
+        fetch_scraper(req, res, 1, DMSMScraper.paths.GET.BestDeals, "GET", undefined, req.body, () => {
+            if (req.session.User) {
+                save_flash_config(req.session.User, 'retrieve_best_deals_dmarket', JSON.stringify(req.body), app)    
+            }
+        });
     } catch {
         res.status(500).json({success: false, msg: "Error casting types"})
     }
@@ -23,8 +27,6 @@ export function req_best_deals(req : ERequest, res: EResponse) {
 
 export function update_scraper_dmarket(req: ERequest, res: EResponse, app: Express) {
     try {
-
-        
         req.body.limit = Number(req.body.limit)
         req.body.offset = Number(req.body.offset)
         req.body.priceFrom = Number(req.body.priceFrom)
@@ -81,8 +83,6 @@ export async function load_darket_deals(req: ERequest, res: EResponse, app: Expr
                     username: req.session.User?.username
                 });
             
-                
-
             } else {
                 console.log("Scraper Addr was already inited.")
                 res.render("pages/dmarket_deals.ejs", {previous_data: null, id: req.session.User?.id || -1, avatar: req.session.User?.avatar || 

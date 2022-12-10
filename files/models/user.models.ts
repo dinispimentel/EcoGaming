@@ -20,6 +20,7 @@ interface IScraperAddr extends RowDataPacket {
 }
 interface IFlashConfig extends RowDataPacket {
     update_internal_dmarket?: string
+    retrieve_best_deals_dmarket?: string
 }
 
 // IGNORAR interface IUser extends Array<IUser> {}  // Junta o login_res[] ao login_res como sendo um só
@@ -59,7 +60,7 @@ export async function initUserScraperAddr(user: User, app: Express){
 
 function is_flash_config(str: string){
     
-    let fcs = ["update_internal_dmarket"]
+    let fcs = ["update_internal_dmarket", "retrieve_best_deals_dmarket"]
     for (let f=0; f<fcs.length; f++) {
         if (fcs[f] == str) return true;
     }
@@ -67,7 +68,7 @@ function is_flash_config(str: string){
 }
 
 
-export async function get_flash_config(user: User, config_col: string, app: Express): Promise<FlashConfig> {
+export async function get_flash_config(user: User, config_col: string, app: Express){
     let pool = <mysql.Pool> app.get('db_pool')
     is_flash_config(config_col)
     let res = await pool.promise().query<IFlashConfig[]>("SELECT "+ config_col +" FROM flash_user_config WHERE uid = ?;", [user.id])
@@ -75,9 +76,10 @@ export async function get_flash_config(user: User, config_col: string, app: Expr
         console.log("No flash config", user.id)
         throw new NoFlashConfigFoundError("flash config not found")
     } 
-    let fc = <FlashConfig> {}
-    if (res[0][0].update_internal_dmarket) {
-        fc.update_internal_dmarket = <FC_UIDM> (typeof res[0][0].update_internal_dmarket === 'object' ? res[0][0].update_internal_dmarket : JSON.parse(res[0][0].update_internal_dmarket))
+    let fc = {}
+    if (res[0][0][config_col]) {
+        
+        (<any> fc)[config_col] = (typeof res[0][0][config_col] === 'object' ? res[0][0][config_col] : JSON.parse(res[0][0][config_col]))
     }
     return fc
 }   

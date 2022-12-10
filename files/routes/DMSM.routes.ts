@@ -6,9 +6,10 @@ const PREFIX = "/dmsm/"
 export function routing(app : Express) {
  
     // Prefixed (SCRAPER API CALLS PROXIFIED)
-    app.get(PREFIX + "bestdeals", req_best_deals)
+    
     app.get(PREFIX + "status", scraper_status)
     app.get(PREFIX + "websocket-addr", get_scraper_addr)
+    app.post(PREFIX + "bestdeals", (req: ERequest, res: EResponse) => {req_best_deals(req, res, app)})
     app.post(PREFIX + "update-dmarket-data", (req: ERequest, res: EResponse) => {update_scraper_dmarket(req, res, app)})
     app.post(PREFIX + "item-naming", (req: ERequest, res: EResponse) => {scraper_item_name(req, res, app)})
     app.post(PREFIX + "item-pricing", scraper_item_price)
