@@ -93,10 +93,10 @@ export function fetch_scraper(req: ERequest, res: EResponse, scraper: number, pa
     method = String(method).toLowerCase()
     switch (scraper) {
         case 0:
-            request_with_method(url_make(G2GScraper.port, path), method, req_body, res,_deal_with_request, allokcb);
+            request_with_method(url_make(G2GScraper.port, path, req.session.User?.scraper_addr?.host), method, req_body, res,_deal_with_request, allokcb);
             break;
         case 1:
-            request_with_method(url_make(DMSMScraper.port, path), method, req_body, res, _deal_with_request, allokcb);
+            request_with_method(url_make(DMSMScraper.port, path, req.session.User?.scraper_addr?.host), method, req_body, res, _deal_with_request, allokcb);
             break
         default:
             throw Error("SCRAPER INDICATED OUT OF RANGE: " + String(scraper))

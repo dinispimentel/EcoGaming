@@ -24,6 +24,7 @@ pool.getConnection( (error : NodeJS.ErrnoException, connection : PoolConnection)
 
 import {routing as main_routing} from './files/routes/main-site.routes'
 import {routing as dmsm_routing} from './files/routes/DMSM.routes'
+import {routing as g2g_routing} from './files/routes/G2GSDB.routes'
 import {routing as utils_routing} from './files/routes/utilities.routes'
 import path from "path";
 import { getHeapSpaceStatistics } from "v8";
@@ -82,6 +83,7 @@ app.use(express.static(path.join(__dirname, '/files/public/static')))
 // set port, listen for requests
 main_routing(app);
 dmsm_routing(app);
+g2g_routing(app);
 utils_routing(app);
 
 app.listen(3000, () => {

@@ -1,5 +1,5 @@
 import {login_or_dashboard, load_login, load_dashboard, load_session_expired, attempt_login} from "../controllers/login-page.controllers";
-import { req_updated_orders } from "../controllers/G2GSDB.controllers";
+import { req_best_deals } from "../controllers/G2GSDB.controllers";
 import {Express} from 'express'
 export function routing(app : Express) {
  

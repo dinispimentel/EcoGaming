@@ -9,6 +9,9 @@ export function statusCode(cb, errcb) {
         404: function(res, statusText) {
             errcb(404, res, statusText)
         },
+        403: function(res, statusText) {
+            errcb(403, res, statusText)
+        },
         400: function(res, statusText) {
             errcb(400, res, statusText)
         },

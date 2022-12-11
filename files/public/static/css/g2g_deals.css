@@ -7,32 +7,38 @@
     align-items: start;
 }
 
-.dm-price-entry {
-    width: 5%;
+.g2g-price-entry {
+    width: 10%;
 }
 
-.sm-price-entry {
-    width: 5%;
+.steam-price-entry {
+    width: 10%;
 }
 
 .gain-diff-entry {
-    width: 20%;
+    width: 10%;
 }
 
 .gain-percentage-entry {
-    width: 20%;
-}
-
-.buy-entry {
     width: 10%;
 }
+
+.offer-count-entry {
+    width: 10%;
+}
+
+.black-list-entry {
+    width: 10%;
+}
+
 .transpose-entry {
     width: 10%;
 }
 
-
-
-.buy-entry-link {
+.anchor-entry {
+    cursor: pointer!important;
+}
+/* .buy-entry-link {
     color: black;
     font-weight: normal;
     font-family: monospace;
@@ -49,4 +55,4 @@
     flex-wrap: nowrap;
     justify-content: center;
 }
-
+ */

@@ -7,15 +7,20 @@ export const G2GScraper = {
     paths: {
 
         GET: {
-            OfferBook: "getUpdatedOfferBook"
+            BestDeals: "bestdeals",
+            Status: "status"
         },
-        POST: {
 
+        POST: {
+            ScanBrands: "check-new-brands",
+            Brand: "brand-it",
+            Price: "g2g-price-it",
+            SteamAppID: "steam-app-id-it",
+            SteamPrice: "steam-price-it"
         }
         
     }
 
-    
 }
 
 export const DMSMScraper = {
@@ -38,7 +43,7 @@ export const DMSMScraper = {
     }
 }
 
-export function url_make(port: number, path: string) {  // urlMake está segregado para caso seja preciso ver a existência de "//" adicionais no meio do path
+export function url_make(port: number, path: string, domain?: string) {  // urlMake está segregado para caso seja preciso ver a existência de "//" adicionais no meio do path
 
-    return _protocol + _domain + ":" + port + "/" + path
+    return _protocol + (domain || _domain) + ":" + port + "/" + path
 }
