@@ -1,5 +1,7 @@
 import { PopUp, create_fields } from '/js/utils/form_popup.js'
 import { statusCode } from '/js/utils/error_handling.js'
+import { alert as nAlert, COLOR_ERROR, COLOR_INFO, COLOR_SUCCESS } from '/js/utils/notification.js'
+
 const UpdateDMarketData = document.getElementById('remote-update-dmarket')
 const ItemNamit = document.getElementById('remote-item-nameit')
 const ItemPriceit = document.getElementById('remote-item-priceit')
@@ -11,25 +13,80 @@ const _PROTOCOL = String(window.location).split("//")[0] + "//"
 const PREFIX = "/dmsm/"
 const _HOST = (String(window.location).substring(0,5) === "http:" ? String(window.location).split("/")[2] : "ecogaming.ga")
 console.log ("HOST", _HOST)
+const MAX_WS_RETRIES = 5
+const CONNECT_RETRY_WAIT = 1000 // ms
+const DEBUG_ADDRESS = "192.168.0.120"
+const NOTIFICATION_TIMEOUT = 6000
+var OFFERBOOK = {}
 
-function clearRows() {
-    let trs = document.getElementsByTagName('tr')
-    for (let r=0; r<trs.length; r++) {
-        if(!trs[r].classList.contains('first-row')) {
-            trs[r].remove()
+function http_code_to_color (code) {
+    code = Number(code)
+    if (code >= 500) {
+        return "darkred"
+    } else if ( code <= 200 ) {
+        return COLOR_SUCCESS
+    } else {
+        return COLOR_ERROR
+    }
+}
+
+function connect_progress(response, times) {
+    try {
+        const wsprogress = new WebSocket(`ws://${DEBUG_ADDRESS || response.host}:${response.port}/progress`)
+        wsprogress.onmessage = (ev) => {ProgressHandler(ev, wsprogress)}                          
+    } catch (err) {
+        if (times < MAX_WS_RETRIES) {
+            setTimeout( () => {
+                connect_progress(response, times+1)
+            }, CONNECT_RETRY_WAIT*times)
+        } else {
+            throw err;
         }
     }
 }
 
-function createHeader(table_row, data) {
-    let th = table_row.insertCell(-1)
-    th.innerText = String(data)
-    return th
+function ProgressHandler (ev, wsprogress) {
+    let data = JSON.parse(ev.data)
+    if (data.data.end === "end") {
+        wsprogress.close(1000, "All done")
+        resetProgressBar()
+        return
+    }
+    ProgressBar.style = "width:" + String((Number(data.data.progress)*100).toFixed(2)) + "%;"
+    ProgressBar.ariaValueNow = String((Number(data.data.progress)*100).toFixed(2))
+    ProgressBar.innerHTML = String((Number(data.data.progress)*100).toFixed(2)) + "%"
+    
+}
+
+function clearRows() {  // return boolean done
+    // let trs = document.getElementsByTagName('tr')
+    let trs = document.querySelectorAll("tr:not(.first-row)");
+    /* for (let r=0; r<trs.length; r++) {
+        if(!trs[r].classList.contains('first-row')) {
+            trs[r].remove()
+        }
+    } */
+    for (const tr of trs) {
+        tr.remove()
+    }
+}
+
+function createHeader(table_row, data, header_classes) {
+    let td = table_row.insertCell(-1)
+    td.innerText = String(data)
+    if (header_classes) {
+        if (typeof header_classes !== typeof []) {
+            header_classes = [header_classes]
+        }
+        td.classList.add(...header_classes)
+    }
+
+    return td
 
 }
 
 function buy_item(id) {
-    alert("Trying to buy: " + String(id))
+    // nAlert("Trying to buy: " + String(id))
     // TODO:// ASK TO CONFIRM 
     let allow_to_buy = confirm("Do you really wish to buy ... ?")
     
@@ -45,58 +102,68 @@ function show_table_deals() {
     }
 }
 
+function offer_diffs(dm_price, sm_price, histogram) {
+    let inst_price_gap = Number(sm_price - dm_price).toFixed(2)
+    let mid_price_gap = histogram.buy_offer_book.length>0 && histogram.sell_offer_book.length>0 ?
+    (((Number(histogram.sell_offer_book[0][0]) + Number(histogram.buy_offer_book[0][0]))/2) - dm_price).toFixed(3): 2**31
+    let ask_price_gap = Number(histogram.ask - dm_price).toFixed(2)
+    return [inst_price_gap, mid_price_gap, ask_price_gap]
+}
+
 function fill_table_offerbook(offerbook) {
     clearRows()
     for (let o=0; o<offerbook.offers.length; o++) {
         let table_row = TableDeals.insertRow(-1)
-       
-        let headers = [
-            createHeader(table_row,offerbook.offers[o].title),
-            createHeader(table_row, String(offerbook.offers[o].dm_price.cValue || offerbook.offers[o].dm_price.value) + 
-            String((offerbook.offers[o].dm_price.cCurrency || offerbook.offers[o].dm_price.currency) ) ) ,
-            createHeader(table_row, String(offerbook.offers[o].sm_price.cValue || offerbook.offers[o].sm_price.value) + 
-            String((offerbook.offers[o].dm_price.cCurrency || offerbook.offers[o].dm_price.currency) )),
-            createHeader(table_row, 
-                String(
-                    Number((offerbook.offers[o].sm_price.cValue || offerbook.offers[o].sm_price.value) -
-                (offerbook.offers[o].dm_price.cValue || offerbook.offers[o].dm_price.value)).toFixed(2)
-                ) + 
-                String((offerbook.offers[o].dm_price.cCurrency || offerbook.offers[o].dm_price.currency) )
-            ),
-            createHeader( table_row,
-                String((
-                    (((offerbook.offers[o].sm_price.cValue || offerbook.offers[o].sm_price.value) -
-                (offerbook.offers[o].dm_price.cValue || offerbook.offers[o].dm_price.value))
-                /(offerbook.offers[o].dm_price.cValue || offerbook.offers[o].dm_price.value))*100
-            ).toFixed(2)) + "%"
-            )
+        let offer = offerbook.offers[o]
+        let dm_price = Number(offer.dm_price.cValue || offer.dm_price.value)
+        let sm_price = Number(offer.sm_price.cValue || offer.sm_price.value)
+        let offer_diff = offer_diffs(dm_price, sm_price, offer.histogram)
+        let instant_price_gap = offer_diff[0]
+        let mid_price_gap = offer_diff[1]
+        let ask_price_gap = offer_diff[2]
+        let currency = String((offer.dm_price.cCurrency || offer.dm_price.currency))
+        currency = currency === "USD" ? "$" : (currency === "EUR" ? "€" : currency)
+        let _title_header = createHeader(table_row,"", ["table-entry", "first-entry", "left-align-entry", "title-entry"])
+        createHeader(table_row, String(dm_price.toFixed(2)) + 
+        currency, ["table-entry", "dm-price-entry"] ) 
+        createHeader(table_row, String(sm_price.toFixed(2)) + 
+        currency, ["table-entry", "sm-price-entry"])
+        createHeader(table_row, 
+            `${instant_price_gap}${currency}`+ " | " + 
+            `${mid_price_gap}${currency}` + " | " +
+            `${ask_price_gap}${currency}` 
+        , ["table-entry", "gain-diff-entry"])
+        createHeader( table_row,
+            `${Number((instant_price_gap/dm_price)*100).toFixed(2)}`+ "%" + " | " +
+            `${Number((mid_price_gap/dm_price)*100).toFixed(2)}`+ "%" + " | " +
+            `${Number((ask_price_gap/dm_price)*100).toFixed(2)}`+ "%"
+        , ["table-entry", "gain-percentage-entry"])
+        
+        
 
-        ]
-        for (let h=0; h<headers.length; h++) {
-            if (h===0) {
-                headers[h].classList.add('first-entry')
-                headers[h].classList.add('left-align-entry')
-            }
-            
-            headers[h].classList.add('table-entry')
-        }
-
+        let _steam_market_icon = document.createElement('i')
+        _steam_market_icon.classList.add('fa-solid', 'fa-arrow-up-right-from-square', "icon-link")
+        let _steam_market_link = document.createElement('a')
+        _steam_market_link.setAttribute('href', "https://steamcommunity.com/market/listings/730/" + offer.title)
+        _steam_market_link.innerText = offer.title
+        _steam_market_link.appendChild(_steam_market_icon)
+        _steam_market_link.classList.add('anchor-entry')
+        _steam_market_link.setAttribute('target', '_blank')
+        _title_header.appendChild(_steam_market_link)
         let _buy_header = table_row.insertCell(-1) // diferenciado
         let _buy_link = document.createElement('a')
-        // _buy_link.setAttribute('onclick', `buy_item("${offerbook.offers[o].itemId}")`)
-        _buy_link.onclick = () => {buy_item(offerbook.offers[o].itemId)}
+        // _buy_link.setAttribute('onclick', `buy_item("${offer.itemId}")`)
+        _buy_link.onclick = () => {buy_item(offer.itemId)}
         _buy_link.classList.add('buy-entry-link')
         _buy_link.innerText = "Buy"
         _buy_header.appendChild(_buy_link)
-        _buy_header.classList.add('buy-entry')
-        _buy_header.classList.add('table-entry')
+        _buy_header.classList.add('buy-entry', 'table-entry')
         let _transpose_header = table_row.insertCell(-1)
         let _transpose_checkbox = document.createElement('input')
         _transpose_checkbox.setAttribute('type', 'checkbox')
-        _transpose_checkbox.id = `transpose-${offerbook.offers[o].itemId}`
+        _transpose_checkbox.id = `transpose-${offer.itemId}`
         _transpose_header.appendChild(_transpose_checkbox)
-        _transpose_header.classList.add('last-entry')
-        _transpose_header.classList.add('table-entry')
+        _transpose_header.classList.add('last-entry', 'table-entry', 'transpose-entry')
         //document.getElementsByTagName('tbody').appendChild(table_row)
         
     }
@@ -119,10 +186,10 @@ function serverError(code, res, statusText) {
     console.log("error:", res, statusText)
     try {
         let jres = JSON.parse(res.responseText)
-        alert(String(code) + " | " + ((jres.msg) ?  jres.msg : "Unkown Error"))
+        nAlert(http_code_to_color(code), Number(code) <= 200 ? "Success: " : "Error: ",  ((jres.msg) ?  jres.msg : "Unkown Error"), NOTIFICATION_TIMEOUT)
         console.table(jres)
     } catch {
-        alert(String(code) + " | " + String(res))
+        nAlert(http_code_to_color(code), Number(code) <= 200 ? "Success: " : "Error: ",  res, NOTIFICATION_TIMEOUT)
     }
     
 }
@@ -199,9 +266,9 @@ UpdateDMarketData.onclick = () => {
                             popUp.clear()
                         }
                         console.log("C")
-                        alert(body.msg)
-                    } catch {
-                        alert("Unparsable msg from server")
+                        nAlert(http_code_to_color(res.status), Number(res.status) <= 200 ? "Success: " : "Error: ",  ((body.msg) ?  body.msg : "Unkown Error"), NOTIFICATION_TIMEOUT)
+                    } catch (err) {
+                        nAlert(http_code_to_color(res.status), Number(res.status) <= 200 ? "Success: " : "Error: ",  err, NOTIFICATION_TIMEOUT)
                     }
                     
                 },
@@ -254,6 +321,7 @@ ItemNamit.onclick = () => {
             statusCode: statusCode(
                 function success(res, statusText) {
                     console.log("success:", res, statusText)
+                    let body = res.responseText !== undefined ? JSON.parse(res.responseText) : res
                     setTimeout(() => {
                         $.ajax({
                             type: "GET",
@@ -262,24 +330,15 @@ ItemNamit.onclick = () => {
                             xhrFields: {
                             withCredentials: true
                             },
-
+                            
                             statusCode: statusCode(function (response) {
                                 console.log(response)
-                                const wsprogress = new WebSocket(`ws://${response.host}:${response.port}/progress`)
-                                wsprogress.onmessage = (ev) => {
-                                    let data = JSON.parse(ev.data)
-                                    ProgressBar.style = "width:" + String(Number(data.data.progress)*100) + "%;"
-                                    ProgressBar.ariaValueNow = String(Number(data.data.progress)*100)
-                                    ProgressBar.innerHTML = String(Number(data.data.progress)*100) + "%"
-                                    if (data.data.progress === 1) {
-                                        wsprogress.close(1000, "All done")
-                                        resetProgressBar()
-                                    }
-                                }
+                                connect_progress(response, 0)
                             }, serverError)
                             
                         });
                     }, 100)
+                    nAlert(COLOR_INFO, "Info: ", body.msg !== undefined ? body.msg : "Action started successfuly", NOTIFICATION_TIMEOUT)
                 },
                 serverError
             )
@@ -334,23 +393,17 @@ ItemPriceit.onclick = () => {
                                             body = response.responseText !== undefined ? JSON.parse(res.responseText) : response
                                             
                                             if (body.success === true) {
-                                                const wsprogress = new WebSocket(`ws://${response.host}:${response.port}/progress`)
-                                                wsprogress.onmessage = (ev) => {
-                                                    let data = JSON.parse(ev.data)
-                                                    ProgressBar.style = "width:" + String(Number(data.data.progress)*100) + "%;"
-                                                    ProgressBar.ariaValueNow = String(Number(data.data.progress)*100)
-                                                    ProgressBar.innerHTML = String(Number(data.data.progress)*100) + "%"
-                                                    if (data.data.progress === 1) {
-                                                        wsprogress.close(1000, "All done")
-                                                        resetProgressBar()
-                                                    }
-                                                }                                   
+                                                
+                                                
+                                                connect_progress(response, 0)
+                                                
+                                                
                                             }
                                             
                                             
-                                        } catch {
+                                        } catch (err) {
                                             console.warn("Could not parse: ", response)
-                                            alert("Unparsable msg from server")
+                                            nAlert(http_code_to_color(500), Number(code) <= 200 ? "Success: " : "Error: ",  err, NOTIFICATION_TIMEOUT)
                                         }
                                     },
                                     function(code, res, statusText) {
@@ -358,11 +411,11 @@ ItemPriceit.onclick = () => {
                                     })
                             })
                         }, 100)
-                        alert(mbody.msg)
+                        nAlert(http_code_to_color(res.success === true ? 200: 400), res.success === true ? "Success: " : "Error: ",  ((mbody.msg) ?  mbody.msg : "Unkown Error"), NOTIFICATION_TIMEOUT)
                     } catch (err) {
 
                         console.warn("Could not parse: ", res, err)
-                        alert("Unparsable msg from server")
+                        nAlert(http_code_to_color(500), Number(500) <= 200 ? "Success: " : "Error: ",  err, NOTIFICATION_TIMEOUT)
                     }
                     
                     
@@ -414,16 +467,18 @@ RetrieveBestDeals.onclick = () => {
                         body = res.responseText !== undefined ? JSON.parse(res.responseText) : res
                         
                         console.table(body)
-                        alert(body)
+                        //nAlert(http_code_to_color(res.status), Number(res.status) <= 200 ? "Success: " : "Error: ",  ((body.msg) ?  body.msg : "Unkown Error"), NOTIFICATION_TIMEOUT)
                         if (body.success === true) {
                             show_table_deals()
                             fill_table_offerbook(body.msg.offerbook)
+                            OFFERBOOK = body.msg.offerbook
                             rbd_popup.clear()
                         }
                     } catch (err) {
                         rbd_popup.clear()
+                        nAlert(http_code_to_color(500), Number(500) <= 200 ? "Success: " : "Error: ",  err, NOTIFICATION_TIMEOUT)
                         throw err;
-                        alert("Unparsable msg from server")
+                        
                     }
                     
                 },

@@ -2,14 +2,17 @@
 
 <html>
     <head>
+        
         <title>EcoDashboard - DMarket Deals</title>
         <link rel="stylesheet" type="text/css" href="css/default.css">
         <link rel="stylesheet" type="text/css" href="css/dmarket_deals.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/utils/notification.css">
         
     </head>
 
     <body>
+        
         <%- include('../partials/header.ejs', {avatar: avatar}) %>
 
         <!--
@@ -22,26 +25,26 @@
                 
                     <table id="table-deals" <% if (previous_data === undefined || previous_data === null ) { %> hidden <% } %> >
                         <tr class="first-row">
-                            <th class="table-header first-header">Title</th>
-                            <th class="table-header">DMPrice</th>
-                            <th class="table-header">SMPrice</th>
-                            <th class="table-header">Gain (value)</th>
-                            <th class="table-header">Gain (%)</th>
-                            <th class="table-header">Buy</th>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
-                            <th class="table-header last-header">Transpose</th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                            <th class="table-header first-header title-entry">Title</th>
+                            <th class="table-header dm-price-entry">DMPrice</th>
+                            <th class="table-header sm-price-entry">SMPrice</th>
+                            <th class="table-header gain-diff-entry">Gain (Val.) [INST | MID | ASK]</th>
+                            <th class="table-header gain-percentage-entry">Gain (%) [INST | MID | ASK]</th>
+                            <th class="table-header buy-entry">Buy</th>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
+                            <th class="table-header last-header transpose-entry">Transpose</th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
                         
                         </tr>
                         
                         <% if (previous_data !== null) { %>
                             <% for( let index = 0; index < 25; index++ ) { %>
                                 <tr>
-                                    <td class="table-entry first-entry left-align-entry" id="item-<%=index%>">AWP | Fever Dream (Minimal Wear)</td>
-                                    <td class="table-entry">10$ (1000ARS$)</td>
-                                    <td class="table-entry">15$ (1500ARS$)</td>
-                                    <td class="table-entry">5$</td>
-                                    <td class="table-entry">50% ↑</td>
+                                    <td class="table-entry first-entry left-align-entry title-entry" id="item-<%=index%>">AWP | Fever Dream (Minimal Wear)</td>
+                                    <td class="table-entry dm-price-entry">10$ (1000ARS$)</td>
+                                    <td class="table-entry sm-price-entry">15$ (1500ARS$)</td>
+                                    <td class="table-entry gain-diff-entry" >5$</td>
+                                    <td class="table-entry gain-percentage-entry">50% ↑</td>
                                     <td class="table-entry buy-entry"><a class="buy-entry-link" onclick="alert('Trying to buy (item-<%=index%>) ' + document.getElementById('item-<%=index%>').innerText)">Buy</a></td>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
-                                    <td class="table-entry last-entry"><input type="checkbox"></td>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                                    <td class="table-entry last-entry transpose-entry"><input type="checkbox"></td>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
                                 </tr>
                             <% } %>
                         <% } else { %>
@@ -83,7 +86,7 @@
         <script src="js/jquery-3.6.1.min.js" defer></script>
         <link rel="stylesheet" type="text/css" href="css/utils/form_popup.css">
         <script type="module" src="js/dmarket_deals.js" defer></script>
-
+        
     </body>
 
     

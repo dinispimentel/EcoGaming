@@ -122,11 +122,11 @@ th {
     border-bottom: 3px solid mediumslateblue;
     text-align: center;
     white-space: nowrap;
-    width: 12.5%;
+    /* width: 12.5%; Moved For specific column entry*/
 }
 
 .first-header {
-    width: 25%;
+    /* width: 25%; Moved For specific column entry*/
     border-left: 3px solid mediumslateblue;
 }
 
@@ -153,7 +153,7 @@ th {
     -ms-overflow-style: none;
     scrollbar-width: none;
     max-height: 16px;
-    width: 12.5%;
+    /* width: 12.5%; Moved For specific column entry*/
 }
 
 .table-entry::-webkit-scrollbar{
@@ -161,7 +161,7 @@ th {
 }
 
 .first-entry {
-    width: 25%;
+    /* width: 25%; Moved For specific column entry*/
     border-left: none;
 }
 
@@ -173,6 +173,38 @@ th {
     text-align: left;
     text-indent: 5px;
     vertical-align: middle;
+}
+
+.title-entry {
+    width: 30%;
+}
+
+.title-entry a {
+    justify-content: start;
+    align-items: start;
+}
+
+.dm-price-entry {
+    width: 5%;
+}
+
+.sm-price-entry {
+    width: 5%;
+}
+
+.gain-diff-entry {
+    width: 20%;
+}
+
+.gain-percentage-entry {
+    width: 20%;
+}
+
+.buy-entry {
+    width: 10%;
+}
+.transpose-entry {
+    width: 10%;
 }
 
 #proxy-health {
@@ -217,3 +249,16 @@ input[type='checkbox'] {
     text-align: center;
 }
 
+.icon-link::after{
+    width: 10px;
+    height: 10px;
+    text-align: center;
+}
+
+.anchor-entry {
+    font-family: monospace;
+    font-size: 10px;
+    color: black;
+    text-decoration: none;
+    width: fit-content;
+}
