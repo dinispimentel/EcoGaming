@@ -1,0 +1,116 @@
+
+
+
+.notf-box {
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    position: relative;
+    z-index: 102;
+    width: 200px;
+    height: fit-content;
+    margin-top: 2%;
+    max-height: 400px;
+}
+
+.notf-item-holder {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: start;
+}
+
+#alert-multi-item-wrapper { /* Aos que não são gerados pelo passado, mas sim recentes */
+    position: absolute!important;
+    z-index: 102;
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: start;
+    width: 520px!important;
+    height: fit-content;
+    max-height: 100%;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.alert-item-wrapper {
+    /* background-color: transparent; */
+    background-color: rgba(200,200,200, 0.7);
+    
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: start;
+    max-width: 500px!important;
+    max-height: 50px!important;
+    /* margin-bottom: 10px; */
+}
+
+
+
+.alert-item-content {
+    color: black;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    margin-bottom: 0px!important;
+}
+
+.alert-item-fade-progress {
+    /* background-color: royalblue; */
+    transition-timing-function: linear!important;
+    transition: width 5s;
+    width: 100%;
+    height: 2px!important;
+}
+
+.alert-item-fade {
+    width: 0%;
+}
+
+.alert-header-text {
+    height: fit-content;
+    vertical-align: middle;
+    text-align: center;
+    text-indent: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Segoe UI';
+    width: fit-content;
+    padding-right: 10px;
+
+}
+
+.alert-details-text {
+    font-family: 'Segoe UI';
+    font-size: 14px;
+    text-align: start;
+    /* text-indent: 5px; */
+    vertical-align: middle;
+    width: fit-content;
+    height: fit-content;
+    /* margin-top: 1px; */
+    
+}
+
+.unselectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.multi-alert-hide {
+    display: none!important;
+}

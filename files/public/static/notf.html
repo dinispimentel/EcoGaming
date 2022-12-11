@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PopUp Test</title>
+    <link rel="stylesheet" type="text/css" href="css/default.css">
+    <link rel="stylesheet" type="text/css" href="css/utils/notification.css">
+    <style>
+        * {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    
+    <script type="module">
+        import {alert as nAlert} from "/js/utils/notification.js"
+        nAlert("rgb(255, 87, 51)", "Error: ", "Teste", 15000)
+        setTimeout( () => {
+            nAlert("chartreuse", "Success: ", "teste2...", 60000)
+        }, 1000)
+    </script>
+    
+</body>
+</html>
