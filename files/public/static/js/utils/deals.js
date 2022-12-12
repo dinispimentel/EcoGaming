@@ -2,6 +2,9 @@ const MAX_WS_RETRIES = 5
 const CONNECT_RETRY_WAIT = 1000 // ms
 const DEBUG_ADDRESS = "192.168.0.120"
 import { COLOR_ERROR, COLOR_SUCCESS } from '/js/utils/notification.js'
+import { alert as nAlert } from '/js/utils/notification.js'
+const NOTIFICATION_TIMEOUT = 6000
+
 export function connect_progress(response, times) {
     try {
         const wsprogress = new WebSocket(`ws://${DEBUG_ADDRESS || response.host}:${response.port}/progress`)
@@ -64,6 +67,18 @@ export function http_code_to_color (code) {
         return COLOR_SUCCESS
     } else {
         return COLOR_ERROR
+    }
+}
+
+export function http_code_to_header (code) {
+    code = Number(code)
+    console.log(code)
+    if (code >= 500) {
+        return "Server Error:"
+    } else if ( code <= 200 ) {
+        return "Success:"
+    } else {
+        return "Client Error:"
     }
 }
 

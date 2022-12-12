@@ -24,7 +24,7 @@
         <div class="wrapper">
             <div id="left-side">
                 
-                    <table id="table-deals" <% if (previous_data === undefined || previous_data === null ) { %> hidden <% } %> >
+                    <table id="table-deals" <% if (offerbook === undefined || offerbook === null ) { %> hidden <% } %> >
                         <tr class="first-row">
                             <th class="table-header first-header title-entry">Game Title</th>
                             <th class="table-header g2g-price-entry">G2G Price</th>
@@ -37,17 +37,38 @@
                         
                         </tr>
                         
-                        <% if (previous_data !== null) { %>
-                            <% for( let index = 0; index < 25; index++ ) { %>
+                        <% if (offerbook !== undefined && offerbook !== null) { %>
+                            <% for( let o = 1; o < Object.keys(offerbook.offers).length; o++ ) { %>
+                                <%  let game_title = Object.keys(offerbook.offers)[o];
+                                    let offer = offerbook.offers[game_title];
+                                    let g2g_price = Number(offer.g2gprice.cValue || offer.g2gprice.value);
+                                    let steam_prices = offer.steamprices;
+                                    let steam_prices_display = "";
+                                    let steam_prices_diffs_ratio = "";
+                                    let steam_prices_diffs = "";
+                                    let currency = String((offer.g2gprice.cCurrency || offer.g2gprice.currency));
+                                    currency = currency === "USD" ? "$" : (currency === "EUR" ? "€" : currency)
+                                    for (const steam_price of steam_prices) {
+                                        steam_prices_display = steam_prices_display + String(steam_price.cValue.toFixed(2)) + currency + "(" +String(steam_price.currency) + ") | "
+                                        steam_prices_diffs = steam_prices_diffs + String((g2g_price - steam_price.cValue).toFixed(2)) + currency + " | "
+                                        steam_prices_diffs_ratio = steam_prices_diffs_ratio + String((((g2g_price - steam_price.cValue)/steam_price.cValue)*100).toFixed(2) ) + "% | "
+                                    }
+                                    steam_prices_display = steam_prices_display.slice(0, steam_prices_display.length-3);
+                                    steam_prices_diffs = steam_prices_diffs.slice(0, steam_prices_diffs.length-3);
+                                    steam_prices_diffs_ratio = steam_prices_diffs_ratio.slice(0, steam_prices_diffs_ratio.length-3);
+
+                                %> 
                                 <tr>
-                                    <td class="table-entry first-entry left-align-entry title-entry" id="item-<%=index%>">Among US</td>
-                                    <td class="table-entry g2g-price-entry">0.3$ (70ARS$)</td>
-                                    <td class="table-entry steam-price-entry" >30$ (7000ARS$)</td>
-                                    <td class="table-entry gain-diff-entry">29.7$</td>
-                                    <td class="table-entry gain-percentage-entry">9900% ↑</td>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
-                                    <td class="table-entry offer-count-entry">30</td>
-                                    <td class="table-entry black-list-entry center-align-entry"><a class="anchor-entry"><i class="fa-solid fa-circle-minus icon-link"></i></a></td>
-                                    <td class="table-entry last-entry transpose-entry"><input type="checkbox"></td>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                                    <td class="table-entry first-entry left-align-entry title-entry" id="item-<%=offer.path%>_<%=offer.appID%>">
+                                        <div class="force-single-row"><%=game_title%> <a href="https://store.steampowered.com/app/<%=offer.appID%>" target="_blank" class="anchor-entry"><i class="fa-solid fa-circle-up icon-link"></i></a><a href="https://www.g2g.com/categories/<%=offer.path%>" target="_blank" class="anchor-entry"><i class="fa-solid fa-circle-down icon-link"></i></a></div>
+                                    </td>
+                                    <td class="table-entry g2g-price-entry"><%=String(g2g_price.toFixed(2)) + currency%></td>
+                                    <td class="table-entry steam-price-entry" ><%=steam_prices_display%></td>
+                                    <td class="table-entry gain-diff-entry"><%=steam_prices_diffs%></td>
+                                    <td class="table-entry gain-percentage-entry"><%=steam_prices_diffs_ratio%></td>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
+                                    <td class="table-entry offer-count-entry"><%=String(offer.count)%></td>
+                                    <td class="table-entry black-list-entry center-align-entry"><a id="blacklist-<%=game_title%>" class="anchor-entry black-list-link"><i class="fa-solid fa-circle-minus icon-link"></i></a></td>
+                                    <td class="table-entry last-entry transpose-entry"><input id="transpose-<%=game_title%>"type="checkbox"></td>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
                                 </tr>
                             <% } %>
                         <% } else { %>
