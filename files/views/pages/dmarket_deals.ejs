@@ -24,7 +24,7 @@
         <div class="wrapper">
             <div id="left-side">
                 
-                    <table id="table-deals" <% if (previous_data === undefined || previous_data === null ) { %> hidden <% } %> >
+                    <table id="table-deals" <% if (offerbook === undefined || offerbook === null ) { %> hidden <% } %> >
                         <tr class="first-row">
                             <th class="table-header first-header title-entry">Title</th>
                             <th class="table-header dm-price-entry">DMPrice</th>
@@ -36,7 +36,7 @@
                         
                         </tr>
                         
-                        <% if (previous_data !== null) { %>
+                        <% if (offerbook !== null) { %>
                             <% for( let index = 0; index < 25; index++ ) { %>
                                 <tr>
                                     <td class="table-entry first-entry left-align-entry title-entry" id="item-<%=index%>">AWP | Fever Dream (Minimal Wear)</td>

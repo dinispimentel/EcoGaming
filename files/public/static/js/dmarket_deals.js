@@ -1,7 +1,7 @@
 import { PopUp, create_fields } from '/js/utils/form_popup.js'
 import { statusCode } from '/js/utils/error_handling.js'
 import { alert as nAlert, COLOR_ERROR, COLOR_INFO, COLOR_SUCCESS } from '/js/utils/notification.js'
-import { connect_progress, ProgressHandler, clearRows, createHeader, http_code_to_color, show_table_deals,
+import { connect_progress, ProgressHandler, clearRows, createHeader, http_code_to_color, http_code_to_header, show_table_deals,
     convert_fielding_to_object, serverError } from '/js/utils/deals.js'
 
 const UpdateDMarketData = document.getElementById('remote-update-dmarket')
