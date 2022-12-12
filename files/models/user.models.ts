@@ -3,7 +3,7 @@
 import { RowDataPacket } from 'mysql2'
 import {compare} from 'bcrypt'
 import { UserNotFoundError, NoScraperConfigFoundError, NoFlashConfigFoundError} from '../classes/global.classes'
-import { FC_UIDM, FlashConfig, ScraperAddr, User } from '../exports/global.exports'
+import { ScraperAddr, User } from '../exports/global.exports'
 import { Express } from 'express'
 import mysql from 'mysql2'
 
@@ -60,13 +60,20 @@ export async function initUserScraperAddr(user: User, app: Express){
 
 function is_flash_config(str: string){
     
-    let fcs = ["update_internal_dmarket", "retrieve_best_deals_dmarket"]
+    let fcs = ["update_internal_dmarket", "retrieve_best_deals_dmarket", "retrieve_best_deals_g2gsdb"]
     for (let f=0; f<fcs.length; f++) {
-        if (fcs[f] == str) return true;
+        if (fcs[f] === str) return true;
     }
     throw new Error("Script error, config asked doesn't exist.")
 }
 
+function is_setting(str: string) {
+    let settings = ["general-settings", "dmsm-settings", "g2gsdb-settings", "exrates-settings"]
+    for (let s=0; s<settings.length; s++) {
+        if (settings[s] === str) return true;
+    }
+    throw new Error("Script error, setting asked doesn't exist.")
+}
 
 export async function get_flash_config(user: User, config_col: string, app: Express){
     let pool = <mysql.Pool> app.get('db_pool')
@@ -89,6 +96,30 @@ export async function save_flash_config(user: User, config_col: string, newjson:
     is_flash_config(config_col)
     let res = await pool.promise().query("UPDATE `ecogaming`.`flash_user_config` SET `"+ config_col +"` = ? WHERE (uid = ?);", [newjson, user.id])
     console.table(res)
+}
+
+export async function get_settings(user: User, settings: string[] | string, app: Express) {
+    let pool = <mysql.Pool> app.get('db_pool')
+    if (typeof settings === typeof "") {
+        settings = [<string> settings]
+    }
+    let settings_list: string = ""
+    for (const setting of settings) {
+        is_setting(setting)
+        settings_list = settings_list + setting + ","
+    }
+    settings_list = settings_list.slice(0, settings_list.length-1)
+    
+    let res = <any> await pool.promise().query('SELECT ' + settings_list + " FROM `settings` WHERE (uid = ?);", [user.id])
+    let set_ret: Array<object> = []
+
+    for (const setting of settings) {
+        if (res[0][0][setting]) {
+            (<any> set_ret)[setting] = ( typeof res[0][0][setting] === 'object' ? res[0][0][setting] : ( (res[0][0][setting] === '' || res[0][0][setting] === null) ? {} : JSON.parse(res[0][0][setting])) )
+        }
+    }
+    return set_ret
+    
 }
 
 /*

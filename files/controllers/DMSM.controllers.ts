@@ -15,9 +15,20 @@ export function req_best_deals(req : ERequest, res: EResponse, app: Express) {
                 req.body.sort_direction = Number(req.body.sort_direction)
                 req.body.offset = Number(req.body.offset)
                 req.body.offer_count = Number(req.body.offer_count)
-                fetch_scraper(req, res, 1, DMSMScraper.paths.GET.BestDeals, "GET", undefined, req.body, () => {
+                fetch_scraper(req, res, 1, DMSMScraper.paths.GET.BestDeals, "GET", undefined, req.body, (body: any) => {
                     if (req.session.User) {
                         save_flash_config(req.session.User, 'retrieve_best_deals_dmarket', JSON.stringify(req.body), app)    
+                    }
+                    if (body instanceof Object) {
+                        
+                        if (!req.session.OfferBooks) {
+                            req.session.OfferBooks = {
+                                DMSM: {},
+                                G2GSDB: {}
+                            }
+                        }
+                        req.session.OfferBooks.DMSM = body.msg.offerbook
+                        console.table(req.session.OfferBooks)
                     }
                 });
             } catch {
@@ -38,10 +49,11 @@ export function update_scraper_dmarket(req: ERequest, res: EResponse, app: Expre
                 req.body.priceTo = Number(req.body.priceTo)
                 req.body.maxLimit = Number(req.body.maxLimit)
                 console.log("To fetch body: ", req.body)
-                fetch_scraper(req, res, 1, DMSMScraper.paths.POST.UpdateDMarket, "POST", undefined, req.body, () => {
+                fetch_scraper(req, res, 1, DMSMScraper.paths.POST.UpdateDMarket, "POST", undefined, req.body, (body: any) => {
                     if (req.session.User) {
                         save_flash_config(req.session.User, 'update_internal_dmarket', JSON.stringify(req.body), app)    
                     }
+                    
                 });
             } catch {
                 res.status(500).json({success: false, msg: "Error casting types"})
@@ -94,22 +106,22 @@ export async function load_darket_deals(req: ERequest, res: EResponse, app: Expr
 
     if (check_authed(req, res, "dmarket-deals", false)) {
         try {
+            function _render() {
+                res.render("pages/dmarket_deals.ejs", {offerbook: null, id: req.session.User?.id || -1, avatar: req.session.User?.avatar || 
+                    "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+                    username: req.session.User?.username
+                });
+            }
             if (req.session.User && req.session.User.scraper_addr === undefined) {
                 console.log("Pre", req.session.User)
                 await initUserScraperAddr(req.session.User, app);
                 console.log("Scraper Addr inited: " + String(req.session.User?.scraper_addr));
                 console.log("Post", req.session.User);
-                res.render("pages/dmarket_deals.ejs", {previous_data: null, id: req.session.User?.id || -1, avatar: req.session.User?.avatar || 
-                    "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
-                    username: req.session.User?.username
-                });
+                _render()
             
             } else {
                 console.log("Scraper Addr was already inited.")
-                res.render("pages/dmarket_deals.ejs", {previous_data: null, id: req.session.User?.id || -1, avatar: req.session.User?.avatar || 
-                    "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
-                    username: req.session.User?.username
-                });
+                _render()
             }
             
         } catch (error) {

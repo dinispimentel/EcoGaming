@@ -5,7 +5,7 @@ import {DMSMScraper, G2GScraper, url_make } from '../config/endpoints.config';
 
 
 
-function _deal_with_request(error: Error, response: RResponse, body: any, res: EResponse, allokcb?: CallableFunction) {
+function _deal_with_request(error: Error, response: RResponse, body: any, res: EResponse, allokcb?: Function) {
     try {
         body = JSON.parse(body);
     } catch {
@@ -29,7 +29,7 @@ function _deal_with_request(error: Error, response: RResponse, body: any, res: E
                 msg: (body !== undefined ? ( typeof body === typeof "" ? body : ('msg' in body ? body.msg : body)) : null)
             });
             if (allokcb && response.statusCode === 200) {
-                allokcb()
+                allokcb(body)
             }
             
         }
@@ -43,9 +43,9 @@ function _deal_with_request(error: Error, response: RResponse, body: any, res: E
 }
 
 type CallbackFunction =
-  (error: Error, response: RResponse, body: any, res: EResponse, allokcb?: CallableFunction) => void;
+  (error: Error, response: RResponse, body: any, res: EResponse, allokcb?: Function) => void;
 
-function request_with_method(urlQueryParametrized: string, method: string, body: any, res: EResponse, cb: CallbackFunction, allokcb?: CallableFunction) {
+function request_with_method(urlQueryParametrized: string, method: string, body: any, res: EResponse, cb: CallbackFunction, allokcb?: Function) {
     let normalized_callback = (error: Error, response: RResponse, body: any) => {cb(error, response, body, res, allokcb)};
     
     interface NormalRequest {
@@ -86,7 +86,7 @@ function request_with_method(urlQueryParametrized: string, method: string, body:
 }
 
 
-export function fetch_scraper(req: ERequest, res: EResponse, scraper: number, path: string, method: string, query_params?: Array<string>, req_body?: object, allokcb?: CallableFunction) {
+export function fetch_scraper(req: ERequest, res: EResponse, scraper: number, path: string, method: string, query_params?: Array<string>, req_body?: object, allokcb?: Function) {
     /**
      * @param scraper `0` -> G2GSDB; `1` -> DMSM
      */

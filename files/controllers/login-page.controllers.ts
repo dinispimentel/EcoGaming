@@ -72,6 +72,8 @@ export async function attempt_login(req: Request, res: Response) {
                 req.session.User = <User> User
             }
             
+            
+
             // TERMINOU DE MODIFICAR TEM DE MANDAR ALGO OU METER UM req.session.save() PQ SE NÃO, NÃO SALVA FDP
             set_was_logged_in(req, res)
             res.json("{\"success\": true}")  // Mandar algo pra salvar DEPOIS DE MODIFICAR

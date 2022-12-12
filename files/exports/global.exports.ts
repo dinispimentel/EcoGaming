@@ -10,6 +10,18 @@ export interface UserInfo {
     Avatar : string
 }
 
+export interface OfferBookColection {
+    DMSM : object,
+    G2GSDB : object
+}
+
+export interface SettingsCollection {
+    GeneralSettings: object,
+    DMSMSettings: object,
+    G2GSDBSettings: object,
+    ExRatesSettings: object
+}
+
 export class User {
     id: number
     avatar: string
@@ -35,29 +47,13 @@ export class ScraperAddr {
     }
 }
 
-export interface FC_UIDM {
-    
-    gameId: string,
-    limit: number,
-    offset: number | string,
-    orderBy: string,
-    orderDir: string,
-    currency: string,
-    types: string,
-    priceFrom: number,
-    priceTo: number,
-    maxLimit: number
-       
-}
-
-export interface FlashConfig {
-    update_internal_dmarket?: FC_UIDM
-}
 
 declare module 'express-session' {
     export interface SessionData {
         LoggedStatus : LoggedStatus,
-        User : User
+        User : User,
+        OfferBooks: OfferBookColection,
+        Settings: SettingsCollection
     }
 }
 

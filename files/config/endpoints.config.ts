@@ -16,7 +16,8 @@ export const G2GScraper = {
             Brand: "brand-it",
             Price: "g2g-price-it",
             SteamAppID: "steam-app-id-it",
-            SteamPrice: "steam-price-it"
+            SteamPrice: "steam-price-it",
+            BlackListAdd: "blacklist-add"
         }
         
     }

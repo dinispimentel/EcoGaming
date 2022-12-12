@@ -1,5 +1,5 @@
 .title-entry {
-    width: 30%;
+    width: 25%;
 }
 
 .title-entry a {
@@ -8,35 +8,41 @@
 }
 
 .g2g-price-entry {
-    width: 10%;
+    width: 5%;
 }
 
 .steam-price-entry {
-    width: 10%;
+    width: 15%;
 }
 
 .gain-diff-entry {
-    width: 10%;
+    width: 20%;
 }
 
 .gain-percentage-entry {
-    width: 10%;
+    width: 20%;
 }
 
 .offer-count-entry {
-    width: 10%;
+    width: 5%;
 }
 
 .black-list-entry {
-    width: 10%;
+    width: 5%;
 }
 
 .transpose-entry {
-    width: 10%;
+    width: 5%;
 }
 
 .anchor-entry {
     cursor: pointer!important;
+}
+
+.force-single-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 /* .buy-entry-link {
     color: black;
