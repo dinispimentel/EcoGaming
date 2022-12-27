@@ -27,8 +27,8 @@ export function req_best_deals(req : ERequest, res: EResponse, app: Express) {
                                 G2GSDB: {}
                             }
                         }
-                        req.session.OfferBooks.DMSM = body.msg.offerbook
-                        console.table(req.session.OfferBooks)
+                        //req.session.OfferBooks.DMSM = body.msg.offerbook
+                        //console.table(req.session.OfferBooks)
                     }
                 });
             } catch {
