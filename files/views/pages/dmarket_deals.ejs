@@ -31,21 +31,40 @@
                             <th class="table-header sm-price-entry">SMPrice</th>
                             <th class="table-header gain-diff-entry">Gain (Val.) [INST | MID | ASK]</th>
                             <th class="table-header gain-percentage-entry">Gain (%) [INST | MID | ASK]</th>
-                            <th class="table-header buy-entry">Buy</th>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
-                            <th class="table-header last-header transpose-entry">Transpose</th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                            <!-- INCORPORADO NO SELECT <th class="table-header buy-entry">Buy</th>  <! --TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
+                            <th class="table-header last-header transpose-entry">Select</th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
                         
                         </tr>
                         
-                        <% if (offerbook !== null) { %>
-                            <% for( let index = 0; index < 25; index++ ) { %>
+                        <% if (offerbook !== null && offerbook !== undefined) { %>
+                            
+                            <% for( let o = 0; o < offerbook.offers.length; o++ ) { %>
+                                <% 
+                                function offer_diffs(dm_price, sm_price, histogram) {
+                                    let inst_price_gap = Number(sm_price - dm_price).toFixed(2)
+                                    let mid_price_gap = histogram.buy_offer_book.length>0 && histogram.sell_offer_book.length>0 ?
+                                    (((Number(histogram.sell_offer_book[0][0]) + Number(histogram.buy_offer_book[0][0]))/2) - dm_price).toFixed(3): 2**31
+                                    let ask_price_gap = Number(histogram.ask - dm_price).toFixed(2)
+                                    return [inst_price_gap, mid_price_gap, ask_price_gap]
+                                }
+                                let offer = offerbook.offers[o]
+                                let dm_price = Number(offer.dm_price.cValue || offer.dm_price.value)
+                                let sm_price = Number(offer.sm_price.cValue || offer.sm_price.value)
+                                let offer_diff = offer_diffs(dm_price, sm_price, offer.histogram)
+                                let instant_price_gap = offer_diff[0]
+                                let mid_price_gap = offer_diff[1]
+                                let ask_price_gap = offer_diff[2]
+                                let currency = String((offer.dm_price.cCurrency || offer.dm_price.currency))
+                                currency = currency === "USD" ? "$" : (currency === "EUR" ? "€" : currency)
+                                %>
                                 <tr>
-                                    <td class="table-entry first-entry left-align-entry title-entry" id="item-<%=index%>">AWP | Fever Dream (Minimal Wear)</td>
-                                    <td class="table-entry dm-price-entry">10$ (1000ARS$)</td>
-                                    <td class="table-entry sm-price-entry">15$ (1500ARS$)</td>
-                                    <td class="table-entry gain-diff-entry" >5$</td>
-                                    <td class="table-entry gain-percentage-entry">50% ↑</td>
-                                    <td class="table-entry buy-entry"><a class="buy-entry-link" onclick="alert('Trying to buy (item-<%=index%>) ' + document.getElementById('item-<%=index%>').innerText)">Buy</a></td>  <!--TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
-                                    <td class="table-entry last-entry transpose-entry"><input type="checkbox"></td>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                                    <td class="table-entry first-entry left-align-entry title-entry"><a href="https://steamcommunity.com/market/listings/730/<%=offer.title%>" class="anchor-entry"><%=offer.title%><i class="fa-solid fa-arrow-up-right-from-square icon-link"></i></a></td>
+                                    <td class="table-entry dm-price-entry"><%=dm_price%><%=currency%></td>
+                                    <td class="table-entry sm-price-entry"><%=sm_price%><%=currency%></td>
+                                    <td class="table-entry gain-diff-entry" ><%=instant_price_gap%><%=currency%> | <%=mid_price_gap%><%=currency%> | <%=ask_price_gap%><%=currency%></td>
+                                    <td class="table-entry gain-percentage-entry"><%=Number((instant_price_gap/dm_price)*100).toFixed(2)%>% | <%=Number((mid_price_gap/dm_price)*100).toFixed(2)%>% | <%=Number((ask_price_gap/dm_price)*100).toFixed(2)%></td>
+                                    <!-- INCORPORADO NO SELECT <td class="table-entry buy-entry"><a class="buy-entry-link" onclick="alert('Trying to buy (item-<%=offer.itemId%>) ' + document.getElementById('item-<%=offer.itemId%>').innerText)">Buy</a></td>  <! --TODO:// Fazer sistema de comprar pela tabela mesmo, com API keys etc...  (plano avançado)-->
+                                    <td class="table-entry last-entry transpose-entry"><input type="checkbox" id="item-<%=offer.itemId%>"></td>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
                                 </tr>
                             <% } %>
                         <% } else { %>
@@ -64,6 +83,7 @@
                         <button class="remote-btn input btn btn-outline-secondary" id="remote-item-nameit">Acquire INID</button>
                         <button class="remote-btn input btn btn-outline-secondary" id="remote-item-priceit">Price Items</button>
                         <button class="remote-btn input btn btn-outline-success" id="remote-retrieve-deals">Retrieve Best Deals</button>
+                        <button class="remote-btn input btn btn-outline-dark" id="remote-move-dmarket">Move to Assign Deals Table</button>
                     </div>
                 </div>
                 <div id="bottom-right-side">

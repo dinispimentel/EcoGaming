@@ -1,6 +1,6 @@
 
 export const _protocol = "http://"
-export const _domain = "192.168.0.120"
+export const _domain = "192.168.0.140"
 
 export const G2GScraper = {
     port: 8081,

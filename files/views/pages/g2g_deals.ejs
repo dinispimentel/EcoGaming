@@ -24,7 +24,7 @@
         <div class="wrapper">
             <div id="left-side">
                 
-                    <table id="table-deals" <% if (offerbook === undefined || offerbook === null ) { %> hidden <% } %> >
+                    <table id="table-deals" <% if (!(offerbook !== undefined && offerbook !== null && offerbook.offers !== undefined && offerbook.offers !== null) ) { %> hidden <% } %> >
                         <tr class="first-row">
                             <th class="table-header first-header title-entry">Game Title</th>
                             <th class="table-header g2g-price-entry">G2G Price</th>
@@ -33,11 +33,11 @@
                             <th class="table-header gain-percentage-entry">Diff (%)</th>
                             <th class="table-header offer-count-entry">Offer Count</th> 
                             <th class="table-header black-list-entry">Add to Black List</th> 
-                            <th class="table-header last-header transpose-entry">Transpose</th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
+                            <th class="table-header last-header transpose-entry">Select</th>  <!--TODO:// Checkbox para btn de "Levar para assign deals" ...  (plano avançado)-->
                         
                         </tr>
                         
-                        <% if (offerbook !== undefined && offerbook !== null) { %>
+                        <% if (offerbook !== undefined && offerbook !== null && offerbook.offers !== undefined && offerbook.offers !== null) { %>
                             <% for( let o = 1; o < Object.keys(offerbook.offers).length; o++ ) { %>
                                 <%  let game_title = Object.keys(offerbook.offers)[o];
                                     let offer = offerbook.offers[game_title];
@@ -89,6 +89,8 @@
                         <button class="remote-btn input btn btn-outline-secondary" id="remote-steam-appid">Steam App Link</button>
                         <button class="remote-btn input btn btn-outline-primary" id="remote-steam-price">Steam Price</button>
                         <button class="remote-btn input btn btn-outline-success" id="remote-retrieve-deals">Retrieve Best Deals</button>
+                        <button class="remote-btn input btn btn-outline-dark" id="remote-move-g2g">Move to Assign Deals Table</button>
+
                     </div>
                 </div>
                 <div id="bottom-right-side">

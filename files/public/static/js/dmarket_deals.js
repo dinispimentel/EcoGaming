@@ -79,14 +79,14 @@ function fill_table_offerbook(offerbook) {
         _steam_market_link.classList.add('anchor-entry')
         _steam_market_link.setAttribute('target', '_blank')
         _title_header.appendChild(_steam_market_link)
-        let _buy_header = table_row.insertCell(-1) // diferenciado
-        let _buy_link = document.createElement('a')
+        /* let _buy_header = table_row.insertCell(-1) // diferenciado
+        let _buy_link = document.createElement('a') */
         // _buy_link.setAttribute('onclick', `buy_item("${offer.itemId}")`)
-        _buy_link.onclick = () => {buy_item(offer.itemId)}
+        /* _buy_link.onclick = () => {buy_item(offer.itemId)}
         _buy_link.classList.add('buy-entry-link')
         _buy_link.innerText = "Buy"
         _buy_header.appendChild(_buy_link)
-        _buy_header.classList.add('buy-entry', 'table-entry')
+        _buy_header.classList.add('buy-entry', 'table-entry') */
         let _transpose_header = table_row.insertCell(-1)
         let _transpose_checkbox = document.createElement('input')
         _transpose_checkbox.setAttribute('type', 'checkbox')

@@ -27,8 +27,9 @@ export function req_best_deals(req : ERequest, res: EResponse, app: Express) {
                                 G2GSDB: {}
                             }
                         }
-                        //req.session.OfferBooks.DMSM = body.msg.offerbook
-                        //console.table(req.session.OfferBooks)
+                        req.session.OfferBooks.DMSM = body.offerbook
+                        console.table(req.session.OfferBooks)
+                        req.session.save()
                     }
                 });
             } catch {
@@ -107,7 +108,7 @@ export async function load_darket_deals(req: ERequest, res: EResponse, app: Expr
     if (check_authed(req, res, "dmarket-deals", false)) {
         try {
             function _render() {
-                res.render("pages/dmarket_deals.ejs", {offerbook: null, id: req.session.User?.id || -1, avatar: req.session.User?.avatar || 
+                res.render("pages/dmarket_deals.ejs", {offerbook: req.session.OfferBooks?.DMSM, id: req.session.User?.id || -1, avatar: req.session.User?.avatar || 
                     "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
                     username: req.session.User?.username
                 });
