@@ -417,3 +417,15 @@ RetrieveBestDeals.onclick = () => {
     });
 }
 
+$.ajax({
+    type: "GET",
+    url: url_make("cache-offerbook"),
+    success: function (response) {
+        if (Object.keys(response) === 0) {
+         console.log("Null res: " + response)
+         return   
+        }
+        show_table_deals()
+        fill_table_offerbook(response)
+    }
+});

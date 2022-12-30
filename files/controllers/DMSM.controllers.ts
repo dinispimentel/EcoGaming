@@ -6,6 +6,7 @@ import { fetch_scraper } from './defaultscraper.controllers';
 import { check_authed, check_scrap_able } from './enforceauth.controllers';
 import { initUserScraperAddr, save_flash_config } from '../models/user.models';
 import { NoScraperConfigFoundError } from '../classes/global.classes';
+import { get_dmsm, set_dmsm } from '../models/offerbooks.models';
 
 
 export function req_best_deals(req : ERequest, res: EResponse, app: Express) {
@@ -18,19 +19,14 @@ export function req_best_deals(req : ERequest, res: EResponse, app: Express) {
                 fetch_scraper(req, res, 1, DMSMScraper.paths.GET.BestDeals, "GET", undefined, req.body, (body: any) => {
                     if (req.session.User) {
                         save_flash_config(req.session.User, 'retrieve_best_deals_dmarket', JSON.stringify(req.body), app)    
-                    }
-                    if (body instanceof Object) {
+                        if (body instanceof Object) {
                         
-                        if (!req.session.OfferBooks) {
-                            req.session.OfferBooks = {
-                                DMSM: {},
-                                G2GSDB: {}
-                            }
+                        
+                            set_dmsm(req.session.User, JSON.stringify(body.offerbook), app)
+                            
                         }
-                        req.session.OfferBooks.DMSM = body.offerbook
-                        console.table(req.session.OfferBooks)
-                        req.session.save()
                     }
+                    
                 });
             } catch {
                 res.status(500).json({success: false, msg: "Error casting types"})
@@ -98,6 +94,14 @@ export function scraper_item_price(req: ERequest, res: EResponse) {
     if (check_authed(req, res, "", true, true)) {
         if (check_scrap_able(req, res)) {
             fetch_scraper(req, res, 1, DMSMScraper.paths.POST.ItemPricing, "POST", undefined, req.body)
+        }
+    }
+}
+
+export async function retrieve_cache_offerbook(req: ERequest, res: EResponse, app: Express) {
+    if (check_authed(req, res, "", true)) {
+        if (check_scrap_able(req, res)) {
+            res.json(req.session.User === undefined ? {} : await get_dmsm(req.session.User, app))
         }
     }
 }

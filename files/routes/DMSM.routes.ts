@@ -1,5 +1,5 @@
 
-import { req_best_deals, load_darket_deals, update_scraper_dmarket, scraper_status, scraper_item_name, scraper_item_price, get_scraper_addr} from "../controllers/DMSM.controllers";
+import { req_best_deals, load_darket_deals, update_scraper_dmarket, scraper_status, scraper_item_name, scraper_item_price, get_scraper_addr, retrieve_cache_offerbook} from "../controllers/DMSM.controllers";
 import {Request as ERequest, Response as EResponse, Express} from 'express'
 const PREFIX = "/dmsm/"
 
@@ -15,7 +15,7 @@ export function routing(app : Express) {
     app.post(PREFIX + "item-pricing", scraper_item_price)
     
     // #\
-
+    app.get(PREFIX + "cache-offerbook", async (req: ERequest, res: EResponse) => {await retrieve_cache_offerbook(req, res, app)})
     
     app.get("/dmarket-deals", async (req: ERequest, res: EResponse) => {await load_darket_deals(req, res, app)})
     

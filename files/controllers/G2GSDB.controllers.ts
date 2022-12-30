@@ -7,6 +7,7 @@ import { fetch_scraper } from './defaultscraper.controllers';
 import { initUserScraperAddr, save_flash_config } from '../models/user.models';
 import { check_authed, check_scrap_able } from './enforceauth.controllers';
 import { NoScraperConfigFoundError } from '../classes/global.classes';
+import { get_g2gsdb, set_g2gsdb } from '../models/offerbooks.models';
 
 
 
@@ -21,19 +22,11 @@ export function req_best_deals(req : ERequest, res: EResponse, app: Express) {
                 fetch_scraper(req, res, 0, G2GScraper.paths.GET.BestDeals, "GET", undefined, req.body, (body: any) => {
                     if (req.session.User) {
                         save_flash_config(req.session.User, 'retrieve_best_deals_g2gsdb', JSON.stringify(req.body), app)    
-                    }
-                    if (body instanceof Object) {
-                        if (req.session.OfferBooks === undefined) {
-                            req.session.OfferBooks = {
-                                DMSM: {},
-                                G2GSDB: {}
-                            }
+                        if (body instanceof Object) {
+                           
+                            set_g2gsdb(req.session.User, JSON.stringify(body.offerbook), app)
                         }
-                        req.session.OfferBooks.G2GSDB = body.offerbook
-                        req.session.save()
-                        console.table(req.session.OfferBooks)
-                    }
-                    
+                    }  
                 });
             } catch {
                 res.status(500).json({success: false, msg: "Error casting types"})
@@ -71,6 +64,14 @@ export function scraper_brand (req: ERequest, res: EResponse) {
                 res.status(500).json({success: false, msg: "Error casting types"})
             }
             
+        }
+    }
+}
+
+export async function retrieve_cache_offerbook(req: ERequest, res: EResponse, app: Express) {
+    if (check_authed(req, res, "", true)) {
+        if (check_scrap_able(req, res)) {
+            res.json(req.session.User === undefined ? {} : await get_g2gsdb(req.session.User, app))
         }
     }
 }

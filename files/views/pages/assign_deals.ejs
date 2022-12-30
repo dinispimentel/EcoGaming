@@ -16,11 +16,16 @@
     <% if (! DMSM || ! G2GSDB) { %>
         <h1>No Data. Please move entries in order to display them here.</h1>
     <%} else { %>
-
-        <table id="table-g2g"></table>
-
-        <table id="table-dmsm"></table>
-
+        <div id="top-wrapper"></div>
+        <div id="bottom-wrapper">
+            <div id="left-container">
+                <table id="table-g2g"></table>
+            </div>
+            <div id="mid-container"></div>
+            <div id="right-container">
+                <table id="table-dmsm"></table>
+            </div>
+        </div>
     <%}%>
 </body>
 </html>

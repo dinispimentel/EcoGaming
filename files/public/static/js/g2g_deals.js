@@ -190,6 +190,7 @@ RetrieveBestDeals.onclick = () => {
 
 function populate_table_deals (offerbook) {
     clearRows()
+    delete offerbook.offers.klass
     for (let o=1; o<Object.keys(offerbook.offers).length; o++) {
         let table_row = TableDeals.insertRow(-1)
         let game_title = Object.keys(offerbook.offers)[o]
@@ -272,3 +273,16 @@ function populate_table_deals (offerbook) {
     
     
 }
+
+$.ajax({
+    type: "GET",
+    url: url_make("cache-offerbook"),
+    success: function (response) {
+        if (Object.keys(response) === 0) {
+         console.log("Null res: " + response)
+         return   
+        }
+        show_table_deals()
+        populate_table_deals(response)
+    }
+});

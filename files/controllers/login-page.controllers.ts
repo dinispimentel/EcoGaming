@@ -59,7 +59,7 @@ export async function attempt_login(req: Request, res: Response) {
         let login = req.body
         
         console.log("Received Username:" + login.username)
-        console.log("Received Passwd:" + login.password)
+        // console.log("Received Passwd:" + login.password)
         let User = await verifyAuth(login.username, login.password, app)
         if (User) {
             // IMPORTANTE: MODIFICAÇÃO DE SESSION
